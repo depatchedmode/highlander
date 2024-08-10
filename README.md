@@ -1,12 +1,121 @@
-# RISC Zero Foundry Template
+# Highlander - There Can Be Only One
 
-> Prove computation with the [RISC Zero zkVM] and verify the results in your Ethereum contract.
+> A turn-based, on-chain/off-chain hybrid game featuring battles between immortal warriors, powered by RISC Zero zkVM.
 
-This repository implements an example application on Ethereum utilizing RISC Zero as a [coprocessor] to the smart contract application.
-It provides a starting point for building powerful new applications on Ethereum that offload work that is computationally intensive (i.e. gas expensive), or difficult to implement in Solidity (e.g. ed25519 signature verification, or HTML parsing).
+## Project Overview
 
-<!-- TODO(#100) Integrate support for Steel more directly into this repo -->
-Integrate with [Steel][steel-repo] to execute view calls and simulate transactions on Ethereum. Check out the [ERC-20 counter][erc20-counter] demo to see an example.
+Highlander is a strategic combat game that combines on-chain result recording with off-chain state management, utilizing zero-knowledge proofs for verification. In this game, players control immortal warriors who battle for supremacy, echoing the iconic phrase: "There can be only one!"
+
+### Game Mechanics
+
+GOAL: Be the last immortal standing
+
+> This scope is too big for a hackathon — needs to be thoughtfully slashed.
+
+1. **Becoming A Highlander:**
+   - You mint a Player NFT — only one per address, but they are transferrable
+   - If you already possess one, and you are "dead" you can re-animate at a cost until a total of 10,000 Player NFTs have been minted — cost increases the closer the total gets to 10,000 
+   - **Highlander Attributes:** Each Highlander has hidden attributes that influence their performance in battle:
+     - Health: Represents the Highlander's life force
+     - Strength: Determines the power of attacks.
+     - Morale: Affects the Highlander's combat effectiveness. This drops if they leave a battle early.
+     - Exhaustion: Accumulates over time and reduces overall performance. It decays slowly during periods of inactivity.
+
+2. **Initiating Combat:**
+   - You can challenge another Highlander
+   - If they 
+
+3. **Turn-Based Combat:**
+   - Players take turns attacking their opponent
+   - The outcome of each attack is determined by a combination of attributes and randomness
+   - **Biased Verifiable Randomness:**
+      - Each turn, a player chooses makes a guess about how impactful their attack will be. This allows for some strategic control while maintaining fairness and verifiability.
+      - A player's guess about the impact is close to the result, the impact will be multiplied positively — and vice versa
+      - To ensure fair and verifiable randomness, this guess uses a commit-reveal scheme
+      - When initiating an attack, players commit to the secret seed
+      - The seed is revealed after both players have committed, ensuring neither can manipulate the outcome
+   - **Abstract Feedback:**
+      - After each turn, players receive abstract visual and textual feedback
+      - This feedback requires interpretation to understand the full impact of actions
+      - Examples: "Your opponent staggers slightly" or "You feel a surge of power" or "That hurt you more than it hurt them"
+
+4. **Battle Resolution:**
+   - **Possible outcomes:**
+      - You defeat the opponent and receive Quickening
+      - You are defeated by the opponent and no longer live — they receive your Quickening
+      - You flee the battle, transferring a portion of your morale to them
+      - Your opponent flees the battle, transferring a portion of their morale to you
+   - **Quickening:**
+      - When a Highlander is defeated, their power is transferred to the victor in a process called the Quickening
+      - This increases the victor's attributes, making them stronger for future battles
+   - **On-Chain Result Recording:**
+      - The results of battles are recorded on-chain
+      - This includes the winner, any attribute changes (in abstract terms) (eg. 0x324 Fled The Battle, barely scarred but exhausted), and proof verification
+
+### Core Components:
+
+1. **On-Chain (Ethereum Smart Contract):**
+   - Records battle results
+   - Manages Highlander NFTs
+   - Verifies zkVM proofs
+
+2. **Off-Chain (RISC Zero zkVM):**
+   - Manages hidden Highlander attributes
+   - Calculates battle outcomes
+   - Generates proofs for on-chain verification
+
+3. **Publisher Application:**
+   - Interfaces between on-chain and off-chain components
+   - Handles user interactions and proof submissions
+
+4. **Game Interface**
+   - Connect wallet and initiate battles
+   - Monitor your own player's game state
+   - Search for and evaluate opponents
+
+## Project Plan
+
+0. **Minimum Playable Demo**
+   - [x] RiscZero Hello World
+   - [x] Get Anvil setup
+   - [x] First pass of project plan
+   - [ ] Basic Web UI - connect wallet and transact w/ demo contract
+   - [ ] Basic Web UI - interact with guest application
+   - [ ] Refine & reduce scope
+
+1. **Smart Contract Development**
+   - [ ] Implement Highlander.sol contract
+   - [ ] Develop NFT functionality for Highlanders
+   - [ ] Create battle initiation and resolution functions
+   - [ ] Implement proof verification
+
+2. **zkVM Guest Program**
+   - [ ] Design Highlander state structure
+   - [ ] Implement battle calculation logic
+   - [ ] Develop "Quickening" system for defeated Highlanders
+   - [ ] Create proof generation for battle outcomes
+
+3. **Publisher Application**
+   - [ ] Set up communication with Ethereum network
+   - [ ] Implement user input handling
+   - [ ] Develop proof generation and submission logic
+   - [ ] Create basic CLI for game interactions
+
+4. **Game Mechanics Refinement**
+   - [ ] Implement commit-reveal scheme for attack randomness
+   - [ ] Develop abstract feedback system for battle results
+   - [ ] Fine-tune battle calculations and attribute effects
+
+5. **Testing and Integration**
+   - [ ] Write unit tests for smart contract
+   - [ ] Develop integration tests for zkVM and smart contract interaction
+   - [ ] Perform end-to-end testing of game flow
+
+6. **Documentation and Deployment**
+   - [ ] Write technical documentation
+   - [ ] Create user guide
+   - [ ] Deploy smart contract to testnet
+   - [ ] Prepare for mainnet deployment
 
 ## Overview
 
